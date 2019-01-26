@@ -1,4 +1,15 @@
 const {ApolloServer, gql} = require('apollo-server');
+const mongoose = require('mongoose');
+require('dotenv').config({path: 'variable.env'});
+
+//Connenct mLab database
+mongoose.connect(process.env.MONGO_URL, {useNewUrlParser: true})
+    .then(() => {
+        console.log('DB connected');
+    })
+    .catch((err) => {
+        console.log(`DB connection failed, ${err}`);
+    });
 
 const typeDefs = gql`
     type Todo {
@@ -8,27 +19,9 @@ const typeDefs = gql`
     type Query {
         getTodos:[Todo]
     }
-    type Mutation {
-        addTodo(task:String,completed:Boolean):Todo
-    }
 `;
 
-const resolvers = {
-    Query: {
-        getTodos() {
-            return todos;
-        }
-    },
-    Mutation: {
-        addTodo(_, args) {
-            let newTodo = {task: args.task, completed: args.completed};
-            todos.push(newTodo);
-            return newTodo;
-        }
-    }
-};
-
-const server = new ApolloServer({typeDefs, resolvers});
+const server = new ApolloServer({typeDefs});
 
 server.listen(4500).then(({url}) => {
     console.log(`Server is listening on ${url}`);
