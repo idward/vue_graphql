@@ -1,10 +1,5 @@
 const {ApolloServer, gql} = require('apollo-server');
 
-const todos = [
-    {task: 'Go shopping', completed: false},
-    {task: 'Sleeping', completed: true}
-];
-
 const typeDefs = gql`
     type Todo {
         task:String,
